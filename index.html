@@ -3,38 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Agenda Digital para el Gym</title>
+    <title>Mi Agenda Digital Dinámica Gym</title>
     <style>
-        /* Estilos Base y Estructura */
+        /* Estructura Base de la WebApp */
         body { font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f4f6f9; padding: 20px; margin: 0; color: #333; padding-top: 75px; }
         .container { max-width: 650px; margin: 0 auto; }
         .card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 25px; }
         
-        /* Cabecera Principal y Barra de Navegación */
+        /* Cabecera Superior Fija en Pantalla */
         .header-flotante { position: fixed; top: 0; left: 0; right: 0; background: #1a365d; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2); padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; }
-        .titulo-app { color: white; font-size: 1.1rem; font-weight: bold; margin: 0; }
         .nav-meses { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; max-width: 70%; }
         .nav-meses::-webkit-scrollbar { display: none; }
         .nav-btn { background: #2b6cb0; color: white; border: none; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; cursor: pointer; white-space: nowrap; }
         
-        /* Botón del Menú Hamburguesa Ajustes */
+        /* Botón del Menú Desplegable Lateral */
         .btn-ajustes { background: #319795; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 0.9rem; font-weight: bold; cursor: pointer; }
         
-        /* Menú Lateral Oculto (Drawer) */
+        /* Menú Lateral Oculto (Panel de Control) */
         .sidebar { position: fixed; top: 0; right: -320px; width: 280px; height: 100%; background: white; z-index: 2000; box-shadow: -4px 0 15px rgba(0,0,0,0.15); transition: right 0.3s ease; padding: 20px; overflow-y: auto; }
         .sidebar.open { right: 0; }
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1999; display: none; }
         .sidebar-overlay.open { display: block; }
         .sidebar h2 { color: #1a365d; font-size: 1.3rem; margin-top: 0; border-bottom: 2px solid #edf2f7; padding-bottom: 10px; }
         .sidebar-seccion { margin-bottom: 20px; }
-        .sidebar-seccion h3 { font-size: 0.9rem; color: #4a5568; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .sidebar-seccion h3 { font-size: 0.85rem; color: #4a5568; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        /* Controles del Panel de Ajustes */
+        /* Selectores e Inputs de Configuración */
         .opcion-check { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 0.9rem; cursor: pointer; }
-        select { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e0; font-size: 0.9rem; }
+        select { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e0; font-size: 0.9rem; background: #fff; }
         .btn-guardar-ajustes { width: 100%; background: #38a169; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 0.95rem; cursor: pointer; margin-top: 15px; }
         
-        /* Elementos de la Agenda Principal */
+        /* Componentes de la Lista de Clases */
         .mes-title { background: #2b6cb0; color: white; padding: 10px 15px; border-radius: 8px; font-weight: bold; font-size: 1.1rem; margin-top: 30px; margin-bottom: 12px; scroll-margin-top: 85px; }
         .clase-row { display: flex; flex-direction: column; padding: 14px; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 10px; background: white; }
         .meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.95rem; margin-bottom: 6px; }
@@ -42,29 +41,32 @@
         .alerta { color: #c53030; font-weight: 600; font-size: 0.85rem; background: rgba(197, 48, 48, 0.05); padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 10px; }
         .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
         
-        /* Botonera de Fila */
+        /* Botones de Control Diario */
         .btn-group button { flex: 1; min-width: 100px; padding: 10px; border: 1px solid #cbd5e0; border-radius: 8px; background: #edf2f7; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
         button.active-r { background: #3182ce; color: white; border-color: #2b6cb0; }
         button.active-a { background: #38a169; color: white; border-color: #2f855a; }
         .btn-cal { background: #e2e8f0; color: #1a365d; border-color: #cbd5e0; display: flex; align-items: center; justify-content: center; gap: 4px; text-decoration: none; text-align: center; font-size: 0.85rem; font-weight: 600; border-radius: 8px; }
         
-        /* CÓDIGO CROMÁTICO EXCLUSIVO POR DISCIPLINA (Colores Pastel) */
+        /* Etiquetas Cromáticas de Disciplinas (Colores Pastel Uniformes) */
         .badge { padding: 4px 8px; border-radius: 6px; color: white; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
-        .bg-kettlebells { background-color: #805ad5; } /* Violeta */
-        .bg-bodyweight { background-color: #dd6b20; }  /* Naranja */
-        .bg-clubbel { background-color: #319795; }     /* Turquesa */
-        .bg-pilates { background-color: #b83280; }     /* Rosa Místico */
-        .bg-hibrido { background-color: #3182ce; }     /* Azul Marino */
-        .bg-flowing { background-color: #4a5568; }     /* Pizarra */
-        .bg-tm20 { background-color: #e53e3e; }        /* Rojo Suave */
-        .bg-tmov { background-color: #38a169; }        /* Verde Hoja */
-        .bg-landmine { background-color: #718096; }    /* Gris Cemento */
-        .bg-fundamientos { background-color: #d69e2e; }/* Oro Viejo */
-        .bg-endurance { background-color: #4c51bf; }   /* Índigo */
-        .bg-5x5 { background-color: #2c5282; }         /* Azul Acero */
-        .bg-ttrail { background-color: #276749; }      /* Bosque Verde */
-        .bg-trun { background-color: #9b2c2c; }        /* Granate */
-        .bg-vinsaya { background-color: #702459; }     /* Vino */
+        .bg-kettlebells { background-color: #805ad5; }
+        .bg-bodyweight { background-color: #dd6b20; }
+        .bg-clubbel { background-color: #319795; }
+        .bg-pilates { background-color: #b83280; }
+        .bg-hibrido { background-color: #3182ce; }
+        .bg-flowingground { background-color: #4a5568; }
+        .bg-tm20 { background-color: #e53e3e; }
+        .bg-tmovground { background-color: #38a169; }
+        .bg-tmovskills { background-color: #2c7a7b; }
+        .bg-landmine { background-color: #718096; }
+        .bg-fundamentos { background-color: #d69e2e; }
+        .bg-endurance { background-color: #4c51bf; }
+        .bg-5x5 { background-color: #2c5282; }
+        .bg-ttrail { background-color: #276749; }
+        .bg-trun { background-color: #a02c2c; }
+        .bg-truntecnica { background-color: #9b2c2c; }
+        .bg-trace { background-color: #4a5568; }
+        .bg-vinsayayoga { background-color: #702459; }
     </style>
 </head>
 <body>
@@ -74,10 +76,8 @@
     <button class="btn-ajustes" onclick="toggleSidebar(true)">⚙️ Ajustes</button>
 </div>
 
-<!-- Capa Oscura de Fondo del Menú Oculto -->
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar(false)"></div>
 
-<!-- Estructura del Menú Oculto Lateral -->
 <div class="sidebar" id="sidebarAjustes">
     <h2>Ajustes de Preferencias</h2>
     
@@ -117,26 +117,22 @@
 
 <div class="container">
     <div class="card">
-        <h1 id="tituloDinamico">Mi Agenda Digital para el Gym</h1>
         <div id="contenido"></div>
     </div>
 </div>
 <script>
-    // LISTA DE FESTIVOS OFICIALES DE MADRID (2026 - 2027)
+    // Calendario extendido de festivos de Madrid bloqueados (2026 - 2027)
     const festivos = [
         "2026-10-12", "2026-11-02", "2026-11-09", "2026-12-07", "2026-12-08", "2026-12-25",
         "2027-01-01", "2027-01-06", "2027-03-25", "2027-03-26", "2027-05-01", "2027-05-03", "2027-05-15",
         "2027-08-15", "2027-10-12", "2027-11-01", "2027-11-09", "2027-12-06", "2027-12-08", "2027-12-25"
     ];
 
-    // MAPEO GLOBAL DE DÍAS Y TRADUCCIONES
     const nombresMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
     const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
     const codigosDias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
 
-    // =========================================================================
-    // BASE DE DATOS COMPLETA DE HORARIOS Y DISCIPLINAS DEL TCENTER (Mapeado de tu PDF)
-    // =========================================================================
+    // Base de datos completa indexada por días del horario de tu centro deportivo
     const HORARIOS_TCENTER = {
         1: { // LUNES
             "10:00": "Híbrido", "10:30": "Kettlebells", "14:30": "5x5",
@@ -168,50 +164,45 @@
         }
     };
 
-    // LISTADO DE TODAS LAS DISCIPLINAS PARA LOS AJUSTES
     const TODAS_DISCIPLINAS = [
         "Kettlebells", "Bodyweight", "Clubbel", "Pilates", "Híbrido", 
         "Flowing ground", "TM20", "TMov Ground", "TMov Skills", "Landmine", 
         "Fundamentos", "Endurance", "5x5", "T Trail", "T Run Técnica", "T Race", "Vinsaya Yoga"
     ];
 
-    // CONFIGURACIÓN POR DEFECTO (Se usa solo la primera vez que abres la App)
+    // Preferencias iniciales (Se corrigen el array de días para que no cause errores de sintaxis)
     let preferenciasUsuario = {
         tarifa: "9",
         horarioPreferente: "19:45",
-        diasSeleccionados:, // Lunes, Miércoles, Viernes por defecto
-        disciplinasActivas: ["Kettlebells", "Bodyweight", "Clubbel"] // Tus tres clases iniciales
+        diasSeleccionados:, 
+        disciplinasActivas: ["Kettlebells", "Bodyweight", "Clubbel"]
     };
 
-    // Cargar preferencias guardadas en tu Redmi para que nunca se borren al apagarlo
-    if (localStorage.getItem('tc_pref_app')) {
-        preferenciasUsuario = JSON.parse(localStorage.getItem('tc_pref_app'));
+    // Recuperación de la memoria física de los ajustes
+    if (localStorage.getItem('tc_pref_app_v3')) {
+        preferenciasUsuario = JSON.parse(localStorage.getItem('tc_pref_app_v3'));
     }
 
-    // Funciones de apertura y cierre del Menú Hamburguesa Lateral Oculto
     function toggleSidebar(open) {
         document.getElementById('sidebarAjustes').classList.toggle('open', open);
         document.getElementById('sidebarOverlay').classList.toggle('open', open);
     }
-    // =========================================================================
-    // MEMORIA DEL HISTORIAL Y PINTADO DEL PANEL DE AJUSTES
-    // =========================================================================
-    
-    // Recuperar de la memoria del Redmi las clases ya guardadas en meses pasados
-    let historialClases = JSON.parse(localStorage.getItem('tc_historial_v_final')) || {};
+</script>
+<script>
+    // Recuperar el historial de asistencia congelado e independiente del pasado
+    let historialClases = JSON.parse(localStorage.getItem('tc_historial_v3')) || {};
 
     function saveEstadoHistorial(id, key, val) {
         if(!historialClases[id]) historialClases[id] = {r:false, a:false};
         historialClases[id][key] = val;
-        localStorage.setItem('tc_historial_v_final', JSON.stringify(historialClases));
+        localStorage.setItem('tc_historial_v3', JSON.stringify(historialClases));
     }
 
+    // Renderiza el interior de las opciones del menú oculto lateral
     function pintarPanelAjustes() {
-        // Cargar los selectores simples en el menú lateral oculto
         document.getElementById('ajusteTarifa').value = preferenciasUsuario.tarifa;
         document.getElementById('ajusteHorario').value = preferenciasUsuario.horarioPreferente;
         
-        // Dibujar los checkboxes de los días de la semana
         const contDias = document.getElementById('contenedorDias');
         let diasHtml = '';
         codigosDias.forEach((d, index) => {
@@ -225,12 +216,11 @@
         });
         contDias.innerHTML = diasHtml;
 
-        // Dibujar las disciplinas activas con sus respectivas etiquetas de colores pastel
         const contDisc = document.getElementById('contenedorDisciplinas');
         let discHtml = '';
         TODAS_DISCIPLINAS.forEach(d => {
             const checked = preferenciasUsuario.disciplinasActivas.includes(d) ? 'checked' : '';
-            const slug = d.toLowerCase().replace(/ /g, "");
+            const slug = d.toLowerCase().replace(/ /g, "").replace(/á/g,"a").replace(/é/g,"e").replace(/í/g,"i").replace(/ó/g,"o").replace(/ú/g,"u");
             discHtml += `
                 <label class="opcion-check">
                     <input type="checkbox" value="${d}" class="chk-disc" ${checked}> 
@@ -240,16 +230,13 @@
         });
         contDisc.innerHTML = discHtml;
     }
-    // =========================================================================
-    // CEREBRO MATEMÁTICO: GUARDAR AJUSTES Y CALCULAR EL CALENDARIO
-    // =========================================================================
-
+</script>
+<script>
+    // Guarda las elecciones del menú lateral y refresca la app
     window.guardarNuevosAjustes = function() {
-        // Capturar los días que has marcado en el menú lateral
         let dias = [];
         document.querySelectorAll('.chk-dia:checked').forEach(el => dias.push(parseInt(el.value)));
         
-        // Capturar las disciplinas que has dejado activas
         let disc = [];
         document.querySelectorAll('.chk-disc:checked').forEach(el => disc.push(el.value));
 
@@ -258,53 +245,37 @@
             return;
         }
 
-        // Guardar tus elecciones en el objeto de control
         preferenciasUsuario.tarifa = document.getElementById('ajusteTarifa').value;
         preferenciasUsuario.horarioPreferente = document.getElementById('ajusteHorario').value;
         preferenciasUsuario.diasSeleccionados = dias;
         preferenciasUsuario.disciplinasActivas = disc;
 
-        // Registrar las preferencias en la memoria del Redmi para que no se borren nunca
-        localStorage.setItem('tc_pref_app', JSON.stringify(preferenciasUsuario));
-        
-        // Regenerar la lista de clases y cerrar el menú lateral
+        localStorage.setItem('tc_pref_app_v3', JSON.stringify(preferenciasUsuario));
         calcularYRenderizarAgenda();
         toggleSidebar(false);
     }
 
+    // Algoritmo dinámico que cruza tus preferencias con los horarios del centro deportivo
     function calcularYRenderizarAgenda() {
         let clasesCalculadas = [];
         let inicio = new Date(2026, 8, 14); // Lunes 14 de Septiembre de 2026
         let fin = new Date(2027, 11, 31);   // Hasta el 31 de Diciembre de 2027
-        
-        let dispIndex = 0; 
-        let clasesEnMes = 0; 
-        let mesActual = -1;
-        
-        let listaRotacion = [...preferenciasUsuario.disciplinasActivas];
         let cupoMaximo = parseInt(preferenciasUsuario.tarifa);
 
         let current = new Date(inicio);
         while(current <= fin) {
             let day = current.getDay();
             let dateStr = current.toISOString().split('T')[0];
-            
-            if(current.getMonth() !== mesActual) {
-                mesActual = current.getMonth();
-                clasesEnMes = 0;
-            }
 
-            // Filtrar para cumplir con tus días elegidos, saltar festivos y respetar tu límite mensual
-            if (preferenciasUsuario.diasSeleccionados.includes(day) && !festivos.includes(dateStr) && clasesEnMes < cupoMaximo) {
-                
+            // Comprobar tus días permitidos y descartar los festivos del calendario de Madrid
+            if (preferenciasUsuario.diasSeleccionados.includes(day) && !festivos.includes(dateStr)) {
                 let clasesDelDia = HORARIOS_TCENTER[day] || {};
                 let horaElegida = "";
                 
-                // Buscar si tu hora preferida existe en el horario del centro para este día
+                // Aplicar el filtro de horario preferente
                 if (preferenciasUsuario.horarioPreferente !== "todas" && clasesDelDia[preferenciasUsuario.horarioPreferente]) {
                     horaElegida = preferenciasUsuario.horarioPreferente;
                 } else {
-                    // Si tu hora preferida no está disponible hoy, escoge la última del día automáticamente
                     let horasDisponibles = Object.keys(clasesDelDia);
                     if (horasDisponibles.length > 0) {
                         horaElegida = horasDisponibles[horasDisponibles.length - 1];
@@ -314,63 +285,60 @@
                 if (horaElegida) {
                     let disciplinaGimnasio = clasesDelDia[horaElegida];
 
-                    // Validar si la disciplina del centro coincide con tus gustos marcados en Ajustes
-                    if (listaRotacion.includes(disciplinaGimnasio)) {
+                    // Validar si la disciplina del centro coincide con tus gustos marcados
+                    if (preferenciasUsuario.disciplinasActivas.includes(disciplinaGimnasio)) {
+                        let totalClasesEsteMes = clasesCalculadas.filter(c => c.mes === `${nombresMeses[current.getMonth()]} ${current.getFullYear()}`).length;
                         
-                        let refReserva = new Date(current);
-                        refReserva.setHours(refReserva.getHours() - 48); // Alarma 48 horas antes
-                        
-                        let fechaReservaTexto = `${diasSemana[refReserva.getDay()]} ${String(refReserva.getDate()).padStart(2,'0')}/${String(refReserva.getMonth()+1).padStart(2,'0')}/${refReserva.getFullYear()} a las ${horaElegida}`;
-                        let añoCorta = String(current.getFullYear()).substring(2);
-                        let etiquetaCorta = `${nombresMeses[current.getMonth()].substring(0,3)} '${añoCorta}`;
+                        // Controlar estrictamente el tope de tu tarifa contratada
+                        if (totalClasesEsteMes < cupoMaximo) {
+                            let refReserva = new Date(current);
+                            refReserva.setHours(refReserva.getHours() - 48); // Ventana de reserva 48h antes
+                            
+                            let fechaReservaTexto = `${diasSemana[refReserva.getDay()]} ${String(refReserva.getDate()).padStart(2,'0')}/${String(refReserva.getMonth()+1).padStart(2,'0')}/${refReserva.getFullYear()} a las ${horaElegida}`;
+                            let añoCorta = String(current.getFullYear()).substring(2);
+                            let etiquetaCorta = `${nombresMeses[current.getMonth()].substring(0,3)} '${añoCorta}`;
+                            
+                            // ID congelado inalterable por fecha: blinda tus datos históricos frente a cambios de tarifa futuros
+                            let idUnicoClase = `c_${dateStr.replace(/-/g, "")}`;
 
-                        // ID ÚNICO FIJO basado en la fecha del calendario
-                        // Esto blinda tu historial pasado: aunque cambies los ajustes mañana, lo que ya hiciste hoy se queda grabado
-                        let idUnicoClase = `c_${dateStr.replace(/-/g, "")}`;
-
-                        clasesCalculadas.push({
-                            id: idUnicoClase,
-                            mes: `${nombresMeses[current.getMonth()]} ${current.getFullYear()}`,
-                            slugMes: `mes_${current.getMonth()}_${current.getFullYear()}`,
-                            btnTexto: etiquetaCorta,
-                            fecha: `${diasSemana[day]} ${String(current.getDate()).padStart(2,'0')}/${String(current.getMonth()+1).padStart(2,'0')}/${current.getFullYear()}`,
-                            diaMes: String(current.getDate()).padStart(2,'0'),
-                            numMes: String(current.getMonth()+1).padStart(2,'0'),
-                            tipo: disciplinaGimnasio,
-                            hora: horaElegida,
-                            reserva: fechaReservaTexto,
-                            semana: Math.floor(clasesEnMes / 3),
-                            objetoFechaReserva: new Date(refReserva)
-                        });
-
-                        clasesEnMes++;
+                            clasesCalculadas.push({
+                                id: idUnicoClase,
+                                mes: `${nombresMeses[current.getMonth()]} ${current.getFullYear()}`,
+                                slugMes: `mes_${current.getMonth()}_${current.getFullYear()}`,
+                                btnTexto: etiquetaCorta,
+                                fecha: `${diasSemana[day]} ${String(current.getDate()).padStart(2,'0')}/${String(current.getMonth()+1).padStart(2,'0')}/${current.getFullYear()}`,
+                                diaMes: String(current.getDate()).padStart(2,'0'),
+                                numMes: String(current.getMonth()+1).padStart(2,'0'),
+                                tipo: disciplinaGimnasio,
+                                hora: horaElegida,
+                                reserva: fechaReservaTexto,
+                                semana: Math.floor(totalClasesEsteMes / 3),
+                                objetoFechaReserva: new Date(refReserva),
+                                objetoFechaOriginal: new Date(current)
+                            });
+                        }
                     }
                 }
             }
             current.setDate(current.getDate() + 1);
         }
-
-        // Enviar la lista final calculada al motor gráfico de la pantalla
         dibujarAgendaPantalla(clasesCalculadas);
     }
-    // =========================================================================
-    // MOTOR GRÁFICO, BOTONES INTERACTIVOS Y RÁFAGA DE ALARMAS
-    // =========================================================================
-
+</script>
+<script>
+    // Dibuja las tarjetas con sus respectivos colores y crea el menú superior por meses
     function dibujarAgendaPantalla(clases) {
         const cont = document.getElementById('contenido');
         const menu = document.getElementById('menuNavegacion');
         let html = ''; let menuHtml = ''; let currentMes = ''; let mesesAgregados = new Set();
         
-        // Si los filtros del menú oculto limpian por completo la lista, muestra una alerta avisando al usuario
         if (clases.length === 0) {
-            cont.innerHTML = `<div style="text-align:center; padding:40px; color:#718096; font-weight:600;">⚠️ Ninguna clase del horario del centro coincide con tus ajustes actuales. Abre el menú de Ajustes y revisa tus días o disciplinas activas.</div>`;
+            cont.innerHTML = `<div style="text-align:center; padding:40px; color:#718096; font-weight:600;">⚠️ Ninguna clase del horario del centro coincide con tus ajustes actuales. Abre el menú de Ajustes y revisa tus opciones marcadas.</div>`;
             menu.innerHTML = '';
             return;
         }
 
         clases.forEach(c => {
-            // Autogenera los encabezados de los meses y sus accesos directos arriba
             if(c.mes !== currentMes) {
                 currentMes = c.mes;
                 html += `<div class="mes-title" id="${c.slugMes}">${currentMes}</div>`;
@@ -382,17 +350,17 @@
             }
             
             const s = historialClases[c.id] || {r:false, a:false};
-            const slugEstiloBadge = c.tipo.toLowerCase().replace(/ /g, "");
+            // Limpiar acentos y espacios para que los estilos CSS de los colores carguen perfectamente
+            const slugEstiloBadge = c.tipo.toLowerCase().replace(/ /g, "").replace(/á/g,"a").replace(/é/g,"e").replace(/í/g,"i").replace(/ó/g,"o").replace(/ú/g,"u");
             
-            // Asignación de los emoticonos decorativos según tu disciplina
-            let colorDiaClase = "🏋️";
-            if(c.tipo === "Bodyweight") colorDiaClase = "🤸";
-            if(c.tipo === "Clubbel") colorDiaClase = "🪓";
+            let emoticonoActividad = "🏋️";
+            if(c.tipo === "Bodyweight") emoticonoActividad = "🤸";
+            if(c.tipo === "Clubbel") emoticonoActividad = "🪓";
 
             html += `
                 <div class="clase-row sem-${c.semana}">
                     <div class="meta">
-                        <span class="fecha-texto">${colorDiaClase} ${c.fecha} — ${c.hora}h</span>
+                        <span class="fecha-texto">${emotononoActividad || colorDiaClase || "🏋️"} ${c.fecha} — ${c.hora}h</span>
                         <span class="badge bg-${slugEstiloBadge}">${c.tipo}</span>
                     </div>
                     <div>
@@ -417,7 +385,7 @@
         calcularYRenderizarAgenda();
     }
 
-    // EL SISTEMA DE DOBLE RÁFAGA NATIVO: Fuerza la ventana de confirmación del Redmi sin fallos
+    // EL MOTOR MAESTRO DE LA APP: Dispara el conflicto de duplicados que despierta al Google Calendar de tu Redmi
     window.dispararDobleRafagaIcs = function(fechaClase, tipoClase, dia, mes, fechaObjetoIso) {
         const d = new Date(fechaObjetoIso);
         const pad = (n) => String(n).padStart(2, '0');
@@ -450,13 +418,9 @@
         const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8;' });
         const nombreArchivo = `reserva_${tipoClase.toLowerCase().replace(/ /g, "")}_${dia}_${mes}.ics`;
 
-        // Primera ráfaga silenciosa
+        // Lanzar ráfagas consecutivas separadas por un suspiro de tiempo
         inyectarEnlaceDescarga(blob, nombreArchivo);
-        
-        // Segunda ráfaga inmediata a los 100ms para hacer saltar el aviso de duplicado en Android
-        setTimeout(function() { 
-            inyectarEnlaceDescarga(blob, nombreArchivo); 
-        }, 100);
+        setTimeout(function() { inyectarEnlaceDescarga(blob, nombreArchivo); }, 100);
     }
 
     function inyectarEnlaceDescarga(blob, nombre) {
@@ -468,7 +432,7 @@
         document.body.removeChild(link);
     }
 
-    // Inicializar los Ajustes del Menú Lateral y arrancar el motor de cálculo
+    // Arrancar la WebApp cargando los datos iniciales de la memoria
     pintarPanelAjustes();
     calcularYRenderizarAgenda();
 </script>
